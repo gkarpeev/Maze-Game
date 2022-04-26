@@ -6,7 +6,8 @@ from maze import *
 from dataStructures import DSU
 
 
-resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+resource.setrlimit(resource.RLIMIT_STACK,
+                   (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 
 class BuilderGenerator(enum.Enum):
@@ -64,7 +65,8 @@ class MazeDFSBuilder(MazeBuilder):
                 adj_cells = [tmp for tmp in maze.adjacent_cells(first_cell)]
                 random.shuffle(adj_cells)
                 for second_cell in adj_cells:
-                    if dsu.merge(*maze.convert_cells_to_int(first_cell, second_cell)):
+                    if dsu.merge(*maze.convert_cells_to_int(first_cell,
+                                                            second_cell)):
                         maze.set_wall(first_cell, second_cell, Wall(False))
                         dq.append(second_cell)
         return maze

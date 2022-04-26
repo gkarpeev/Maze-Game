@@ -2,16 +2,18 @@ import resource
 from maze import *
 
 
-resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+resource.setrlimit(resource.RLIMIT_STACK,
+                   (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 
 class DSU:
     parent = []
     rank = []
+
     def __init__(self, n: int):
         self.parent = [i for i in range(n)]
         self.rank = [0] * n
-    
+
     def get_parent(self, v: int):
         if self.parent[v] == v:
             return v
@@ -45,11 +47,12 @@ class PathHistoryStorage:
     width = 0
 
     def __init__(self, height: int, width: int):
-        self.previous = [[Cell(x, y) for y in range(width)] for x in range(height)]
+        self.previous = [[Cell(x, y) for y in range(width)]
+                         for x in range(height)]
         self.visited = [[False for y in range(width)] for x in range(height)]
         self.height = height
         self.width = width
-    
+
     def good_cell(self, cell):
         return 0 <= cell.x < self.height and 0 <= cell.y < self.width
 
@@ -64,7 +67,7 @@ class PathHistoryStorage:
             # raise "Error: no path founded"
             return []
         return path[::-1]
-    
+
     def is_visited(self, cell: Cell):
         return self.visited[cell.x][cell.y]
 
@@ -76,7 +79,7 @@ class PathHistoryStorage:
                 if self.is_visited(cell):
                     result.append(cell)
         return result
-    
+
     def add_visited_cell(self, previous_cell: Cell, cell: Cell):
         self.visited[cell.x][cell.y] = True
         self.previous[cell.x][cell.y] = previous_cell

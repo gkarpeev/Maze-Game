@@ -12,16 +12,16 @@ class Cell:
 
     def __add__(self, other):
         return Cell(self.x + other.x, self.y + other.y)
-    
+
     def __sub__(self, other):
         return Cell(self.x - other.x, self.y - other.y)
-    
+
     def __mul__(self, scale: int):
         return Cell(self.x * scale, self.y * scale)
-    
+
     def __truediv__(self, scale: int):
         return Cell(self.x // scale, self.y // scale)
-    
+
     def __repr__(self):
         return '(x: {}, y: {})'.format(self.x, self.y)
 
@@ -48,30 +48,31 @@ class Cell:
     def str_to_cell(str: str):
         result = re.findall('\d{1,}', str)
         return Cell(*result)
-    
+
     def get_two_cells(str: str):
         result = re.findall('\(.{1,}?\)', str)
         return [Cell.str_to_cell(result[0]), Cell.str_to_cell(result[1])]
-    
+
 
 class Wall:
     wall = True
 
     def __init__(self, wall: bool):
         self.wall = wall
-    
+
     def __bool__(self):
         return self.wall
 
     def __repr__(self):
         return '{}'.format(self.wall)
 
+
 class Maze:
     height = 10
     width = 10
     walls = defaultdict(Wall)
     move_cell = [Cell(0, 1), Cell(-1, 0), Cell(1, 0), Cell(0, -1)]
-    
+
     horizontal_line = '─'
     vertical_line = '│'
     unset_line = ' '
@@ -95,18 +96,18 @@ class Maze:
 
     def get_height(self):
         return self.height
-    
+
     def get_width(self):
         return self.width
 
     def good_cell(self, cell):
         return 0 <= cell.x < self.height and 0 <= cell.y < self.width
-    
+
     def adjacent_cells(self, cell: Cell):
         for k in range(4):
             new_cell = cell + self.move_cell[k]
             yield new_cell
-    
+
     def available_adjacent_cells(self, cell: Cell):
         for k in range(4):
             new_cell = cell + self.move_cell[k]
@@ -141,15 +142,18 @@ class Maze:
 
     def get_line(self, first_cell: Cell, second_cell: Cell):
         if self.is_wall_between_cells(first_cell, second_cell):
-            return self.horizontal_line if Maze.is_horizontal_line(first_cell, second_cell) else self.vertical_line
+            return self.horizontal_line if \
+                Maze.is_horizontal_line(first_cell, second_cell)\
+                else self.vertical_line
         else:
             return self.unset_line
-    
+
     def get_wall_from_line_type(self, line: str):
         return Wall(False) if line == self.unset_line else Wall(True)
 
     def get_maze(self):
-        result = [[self.corner for i in range(2 * self.width + 1)] for j in range(2 * self.height + 1)]
+        result = [[self.corner for i in range(2 * self.width + 1)]
+                  for j in range(2 * self.height + 1)]
 
         for cell in self.get_cells():
             pos_of_cell = cell * 2 + Cell(1, 1)
@@ -178,18 +182,21 @@ class Maze:
                     if adj_wall.x < 0 or adj_wall.y < 0:
                         cur += 1
                         continue
-                    if adj_wall.x >= 2 * self.height + 1 or adj_wall.y >= 2 * self.width + 1:
+                    if adj_wall.x >= 2 * self.height + 1 or \
+                       adj_wall.y >= 2 * self.width + 1:
                         cur += 1
                         continue
-                    if self.get_wall_from_line_type(result[adj_wall.x][adj_wall.y]):
+                    if self.get_wall_from_line_type(
+                            result[adj_wall.x][adj_wall.y]):
                         new_type += add_type[cur]
                     cur += 1
                 line_type = self.UNICODE_BY_CONNECTIONS[new_type]
                 result[pos_of_wall.x][pos_of_wall.y] = line_type
         return result
-    
+
     def convert_cells_to_int(self, *args):
-        return [cell.x * self.width + cell.y if self.good_cell(cell) else -1 for cell in args]
+        return [cell.x * self.width + cell.y
+                if self.good_cell(cell) else -1 for cell in args]
 
     def __str__(self):
         result = self.get_maze()
@@ -199,6 +206,7 @@ class Maze:
                 s += j
             s += '\n'
         return s
-    
+
     def __repr__(self):
-        return 'height = {}\nwidth = {}\nwalls = [\n{}\n]\n'.format(self.height, self.width, self.walls)
+        return 'height = {}\nwidth = {}\nwalls = [\n{}\n]\n'.format(
+            self.height, self.width, self.walls)

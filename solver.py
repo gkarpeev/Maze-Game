@@ -6,7 +6,8 @@ from dataStructures import PathHistoryStorage
 from queue import PriorityQueue
 
 
-resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+resource.setrlimit(resource.RLIMIT_STACK,
+                   (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 
 class SolverAlgorithm(enum.Enum):
@@ -31,7 +32,7 @@ class MazeSolverBFS:
 
     def __str__(self):
         return SolverAlgorithm.BFS.value
-    
+
     def solve(self, maze: Maze, start: Cell, finish: Cell):
         if start == finish:
             return [start]
@@ -61,7 +62,7 @@ class MazeSolverAStar:
 
     def heuristic_function(cell: Cell, finish: Cell):
         return abs((finish - cell).x) + abs((finish - cell).y)
-    
+
     def distance_function(distance: int, cell: Cell, finish: Cell):
         return distance + MazeSolverAStar.heuristic_function(cell, finish)
 
@@ -79,5 +80,7 @@ class MazeSolverAStar:
             for next_cell in maze.available_adjacent_cells(cell):
                 if storage.is_visited(next_cell):
                     continue
-                q.put((MazeSolverAStar.distance_function(real_distance + 1, next_cell, finish), real_distance + 1, cell, next_cell))
+                q.put((MazeSolverAStar.distance_function(
+                        real_distance + 1, next_cell, finish),
+                       real_distance + 1, cell, next_cell))
         return storage.get_path(start, finish), storage.get_visited_cells()
